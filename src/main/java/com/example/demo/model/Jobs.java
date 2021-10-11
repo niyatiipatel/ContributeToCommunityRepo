@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 public class Jobs {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	
 	@Column(name ="job_name")
@@ -35,7 +36,8 @@ public class Jobs {
 	@Column(name ="job_desc")
 	private String jobDesc;
 
-	@ManyToMany(cascade = {
+	@ManyToMany(fetch = FetchType.LAZY,
+			cascade = {
 			CascadeType.PERSIST,
 			CascadeType.MERGE
 	})
@@ -43,7 +45,7 @@ public class Jobs {
 	inverseJoinColumns = @JoinColumn(name = "volunteer_id")
 			)
 	@JsonView(JsonViewProfiles.Jobs.class)
-	private List<Volunteers> volunteers;
+	private List<Volunteers> volunteers = new ArrayList<Volunteers>();
 	
 	public int getId() {
 		return id;
@@ -78,6 +80,14 @@ public class Jobs {
 	}
 	
 	
-	
+	public Jobs(String jobName, String jobDesc)
+	{
+		this.jobDesc = jobDesc;
+		this.jobName = jobName;
+	}
+
+	public Jobs() {
+		// TODO Auto-generated constructor stub
+	}
 	
 }
