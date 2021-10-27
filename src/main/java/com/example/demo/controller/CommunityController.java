@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -10,8 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.Jobs;
 import com.example.demo.model.Volunteers;
-import com.example.demo.repo.JobsRepo;
-import com.example.demo.repo.VolunteersRepo;
+import com.example.demo.service.CommunityService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -19,17 +17,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class CommunityController {
 	
 	@Autowired
-	VolunteersRepo volunteerRepo;
-	
-	@Autowired
-	JobsRepo jobsRepo;
+	CommunityService commService;
 	
 	@RequestMapping("/getVolunteersByJobId/{id}")
 	@ResponseBody
 	public String getVolunteersByJobId(@PathVariable("id") int id) throws JsonProcessingException
 	{
-		 
-		Jobs jobObj = jobsRepo.findById(id).orElse(new Jobs());
+		 Jobs jobObj= commService.getVolunteersByJobId(id);
 		
 		 String result = new ObjectMapper().writerWithView(JsonViewProfiles.Jobs.class)
 	                .writeValueAsString(jobObj);
@@ -38,13 +32,12 @@ public class CommunityController {
 	}
 
 
-	
 	@RequestMapping("/getVolunteersByPage/{page}")
 	@ResponseBody
 	public String getVolunteersByPage(@PathVariable("page") int page) throws JsonProcessingException
 	{
-		Page<Volunteers> obj = volunteerRepo.findAll(PageRequest.of(page, 10));
-
+		Page<Volunteers> obj = commService.getVolunteersByPage(page);
+		
 		 String result = new ObjectMapper().writerWithView(JsonViewProfiles.Volunteers.class)
 	                .writeValueAsString(obj);
 		
