@@ -14,6 +14,7 @@ import com.example.demo.repo.JobsRepo;
 import com.example.demo.repo.VolunteersRepo;
 
 @SpringBootApplication
+
 public class CommunityDemoApplication implements CommandLineRunner {
 
 	public static void main(String[] args) {
